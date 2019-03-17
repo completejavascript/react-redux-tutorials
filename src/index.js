@@ -11,15 +11,12 @@
 // // Learn more about service workers: https://bit.ly/CRA-PWA
 // serviceWorker.unregister();
 
-import { createStore } from 'redux';
+import { createStore, combineReducers } from 'redux';
 
-const initalState = {
-  result: 1, 
+const mathReducer = (state = {
+  result: 1,
   lastValues: [],
-  userName: "Lam"
-}
-
-const reducer = (state = initalState, action) => {
+}, action) => {
   switch (action.type) {
     case "ADD":
       state = {
@@ -28,7 +25,7 @@ const reducer = (state = initalState, action) => {
         lastValues: [...state.lastValues, action.payload]
       }
       break;
-    case "SUBTRACT": 
+    case "SUBTRACT":
       state = {
         ...state,
         result: state.result - action.payload,
@@ -42,7 +39,34 @@ const reducer = (state = initalState, action) => {
   return state;
 }
 
-const store = createStore(reducer);
+const userReducer = (state = {
+  name: "Lam",
+  age: 26
+}, action) => {
+  switch (action.type) {
+    case "SET_AGE":
+      state = {
+        ...state,
+        age: action.payload,
+      }
+      break;
+    case "SET_NAME":
+      state = {
+        ...state,
+        name: action.payload
+      }
+      break;
+    default:
+      console.log("Action unknown");
+  }
+
+  return state;
+}
+
+const store = createStore(combineReducers({
+  mathReducer,
+  userReducer
+}));
 
 store.subscribe(() => {
   console.log("State updated:", store.getState());
@@ -61,4 +85,14 @@ store.dispatch({
 store.dispatch({
   type: "SUBTRACT",
   payload: 50
+});
+
+store.dispatch({
+  type: "SET_NAME",
+  payload: "Lam Pham"
+});
+
+store.dispatch({
+  type: "SET_AGE",
+  payload: 27
 });
