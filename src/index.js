@@ -13,13 +13,27 @@
 
 import { createStore } from 'redux';
 
-const reducer = (state, action) => {
+const initalState = {
+  result: 1, 
+  lastValues: [],
+  userName: "Lam"
+}
+
+const reducer = (state = initalState, action) => {
   switch (action.type) {
     case "ADD":
-      state += action.payload;
+      state = {
+        ...state,
+        result: state.result + action.payload,
+        lastValues: [...state.lastValues, action.payload]
+      }
       break;
     case "SUBTRACT": 
-      state -= action.payload;
+      state = {
+        ...state,
+        result: state.result - action.payload,
+        lastValues: [...state.lastValues, action.payload]
+      }
       break;
     default:
       console.log("Action unknown");
@@ -28,7 +42,7 @@ const reducer = (state, action) => {
   return state;
 }
 
-const store = createStore(reducer, 1);
+const store = createStore(reducer);
 
 store.subscribe(() => {
   console.log("State updated:", store.getState());
